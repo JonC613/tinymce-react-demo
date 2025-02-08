@@ -1,12 +1,15 @@
 import OpenAI from 'openai';
-import dotenv from 'dotenv';
 
-dotenv.config({ path: './.env' });
+console.log('Loading AI Plugin...');
 
-console.log('OpenAI API Key:', process.env.OPENAI_API_KEY);
-const openai =  new OpenAI(
-  { apiKey: process.env.OPENAI_API_KEY }
-)
+if (!import.meta.env.VITE_OPENAI_API_KEY) {
+  throw new Error('Missing OpenAI API Key in environment variables');
+}
+
+console.log('OpenAI API Key:', import.meta.env.VITE_OPENAI_API_KEY);
+const openai = new OpenAI(
+  { apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true }
+);
 
 const customIconSVG =
   '<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
