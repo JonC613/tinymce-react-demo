@@ -1,3 +1,13 @@
+import OpenAI from 'openai';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: './.env' });
+
+console.log('OpenAI API Key:', process.env.OPENAI_API_KEY);
+const openai =  new OpenAI(
+  { apiKey: process.env.OPENAI_API_KEY }
+)
+
 const customIconSVG =
   '<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
     '<text x="2" y="20" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#000">AI</text>' +
@@ -21,7 +31,25 @@ interface NestedMenuItem {
 interface AIPlugin {
   (editor: any): void;
 }
-//
+
+const transformText = async (text: string, tone: string) => {
+  try {
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: 'You are a helpful assistant.' },
+        { role: 'user', content: `Transform the following text to have a ${tone} tone: ${text}` },
+      ],
+      store: true,
+    });
+    const content = response.choices[0]?.message?.content?.trim();
+    return content ?? 'Error: No content returned';
+  } catch (error) {
+    console.error('Error transforming text:', error);
+    return 'Error transforming text';
+  }
+};
+
 const AIPlugin: AIPlugin = (editor) => {
   editor.ui.registry.addMenuButton('customMenuButton', {
     icon: 'customIcon',
@@ -29,22 +57,6 @@ const AIPlugin: AIPlugin = (editor) => {
       const selectedText = editor.selection.getContent({ format: 'text' });
       console.log(selectedText);
       const isDisabled = !selectedText;
-
-      const transformText = async (text: string, tone: string) => {
-        const response = await fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `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`
-          },
-          body: JSON.stringify({
-            prompt: `Transform the following text to have a ${tone} tone: ${text}`,
-            max_tokens: 60
-          })
-        });
-        const data = await response.json();
-        return data.choices[0].text.trim();
-      };
 
       const items: (MenuItem | NestedMenuItem)[] = [
         {
