@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import './App.css';
-import customPlugin from '../public/tinymce/plugins/aiPlugin.ts'; // Import custom plugin
+import customPlugin from '../tinymce/plugins/aiPlugin.ts'; // Import custom plugin
 
 export default function App() {
   const editorRef = useRef<any>(null); // Use 'any' to access TinyMCE editor API
