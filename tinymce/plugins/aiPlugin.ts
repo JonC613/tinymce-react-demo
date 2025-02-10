@@ -86,11 +86,11 @@ const transformText = async (text: string, tone: string): Promise<string> => {
       messages: [
         { 
           role: 'system', 
-          content: 'You are a helpful assistant who creates professional, clear, and persuasive marketing messages for billing statements. You will maintain a professional tone at all times and avoid any use of emoticons or slang.' 
+          content: 'You are a helpful assistant.' 
         },
         { 
           role: 'user', 
-          content: `Transform the following text into a clear and persuasive billing statement marketing message with a ${tone} tone: ${text}` 
+          content: `Transform the following text into a clear and persuasive message with a ${tone} tone. Please ensure that your response is concise, has a similar token count to the original text, and does not include any additional commentary or introductory phrases. Only provide the transformed text: ${text}` 
         },
       ],
       store: true,
