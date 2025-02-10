@@ -84,8 +84,14 @@ const transformText = async (text: string, tone: string): Promise<string> => {
     const response = await openai.chat.completions.create({
       model: 'gpt-4o-mini', // Adjust model as needed.
       messages: [
-        { role: 'system', content: 'You are a helpful assistant.' },
-        { role: 'user', content: `Transform the following text to have a ${tone} tone: ${text}` },
+        { 
+          role: 'system', 
+          content: 'You are a helpful assistant who creates professional, clear, and persuasive marketing messages for billing statements. You will maintain a professional tone at all times and avoid any use of emoticons or slang.' 
+        },
+        { 
+          role: 'user', 
+          content: `Transform the following text into a clear and persuasive billing statement marketing message with a ${tone} tone: ${text}` 
+        },
       ],
       store: true,
     });
