@@ -52,7 +52,6 @@ const customIconSVG = `
     AI
   </text>
 </svg>
-
 `;
 
 // TypeScript interfaces for menu items
@@ -76,10 +75,10 @@ interface AIPlugin {
 /**
  * Calls the OpenAI API to transform the provided text.
  * @param text The text to transform.
- * @param tone The tone to apply.
+ * @param prompt The prompt to apply.
  * @returns A promise resolving to the transformed text or an error message.
  */
-const transformText = async (text: string, tone: string): Promise<string> => {
+const transformText = async (text: string, prompt: string): Promise<string> => {
   try {
     const response = await openai.chat.completions.create({
       model: 'gpt-4o-mini', // Adjust model as needed.
@@ -90,12 +89,16 @@ const transformText = async (text: string, tone: string): Promise<string> => {
         },
         {
           role: 'user',
-          content: `Transform the following text to have a ${tone}. Ensure the length roughly matches that of the original message.  tone: ${text}`
+          content: `${prompt}: ${text}`
         },
       ],
       store: true,
     });
-    const content = response.choices[0]?.message?.content?.trim();
+    let content = response.choices[0]?.message?.content?.trim();
+    if (content) {
+      // Remove any additional messages from the response
+      content = content.replace(/^[^:]*:\s*/, '');
+    }
     return content ?? 'Error: No content returned';
   } catch (error) {
     console.error('Error transforming text:', error);
@@ -170,8 +173,11 @@ const AIPlugin: AIPlugin = (editor) => {
       }
 
       // Helper function to perform text transformation.
-      const handleTextTransformation = async (tone: string) => {
-        const result = await transformText(selectedText, tone);
+      const handleTextTransformation = async (prompt: string) => {
+        const selectedText = editor.selection.getContent({ format: 'text' }); // Get the selected text within the handler
+        console.log(`Transforming text with prompt: ${prompt}`); // Debugging log
+        console.log(`Selected text: ${selectedText}`); // Debugging log
+        const result = await transformText(selectedText, prompt);
         if (result.startsWith('Error')) {
           editor.notificationManager.open({
             text: result,
@@ -186,26 +192,24 @@ const AIPlugin: AIPlugin = (editor) => {
       const items: (MenuItem | NestedMenuItem)[] = [
         {
           type: 'nestedmenuitem',
-          text: 'Message Tone',
+          text: 'Change tone',
           getSubmenuItems: () => [
-            { type: 'menuitem', text: 'Happy', onAction: () => handleTextTransformation('happy') },
-            { type: 'menuitem', text: 'Stern', onAction: () => handleTextTransformation('stern') },
+            { type: 'menuitem', text: 'Professional', onAction: () => handleTextTransformation('Rewrite this content using polished, formal, and respectful language to convey professional expertise and competence.') },
+            { type: 'menuitem', text: 'Casual', onAction: () => handleTextTransformation('Rewrite this content with casual, informal language to convey a casual conversation with a real person.') },
+            { type: 'menuitem', text: 'Direct', onAction: () => handleTextTransformation('Rewrite this content with direct language using only the essential information.') },
+            { type: 'menuitem', text: 'Confident', onAction: () => handleTextTransformation('Rewrite this content using compelling, optimistic language to convey confidence in the writing.') },
+            { type: 'menuitem', text: 'Friendly', onAction: () => handleTextTransformation('Rewrite this content using friendly, comforting language, to convey understanding and empathy.') },
           ],
         },
         {
           type: 'nestedmenuitem',
-          text: 'Message Sentiment',
+          text: 'Change style',
           getSubmenuItems: () => [
-            { type: 'menuitem', text: 'Business', onAction: () => handleTextTransformation('business') },
-            { type: 'menuitem', text: 'Legal', onAction: () => handleTextTransformation('legal') },
-          ],
-        },
-        {
-          type: 'nestedmenuitem',
-          text: 'Language',
-          getSubmenuItems: () => [
-            { type: 'menuitem', text: 'Spanish', onAction: () => handleTextTransformation('Spanish') },
-            { type: 'menuitem', text: 'French', onAction: () => handleTextTransformation('French') },
+            { type: 'menuitem', text: 'Business', onAction: () => handleTextTransformation('Rewrite this content as a business professional with formal language.') },
+            { type: 'menuitem', text: 'Legal', onAction: () => handleTextTransformation('Rewrite this content as a legal professional using valid legal terminology.') },
+            { type: 'menuitem', text: 'Journalism', onAction: () => handleTextTransformation('Rewrite this content as a journalist using engaging language to convey the importance of the information.') },
+            { type: 'menuitem', text: 'Medical', onAction: () => handleTextTransformation('Rewrite this content as a medical professional using valid medical terminology.') },
+            { type: 'menuitem', text: 'Poetic', onAction: () => handleTextTransformation('Rewrite this content as a poem using poetic techniques without losing the original meaning.') },
           ],
         },
       ];
