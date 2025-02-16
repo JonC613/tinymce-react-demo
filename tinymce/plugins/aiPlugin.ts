@@ -1,5 +1,11 @@
 import OpenAI from 'openai';
 
+interface ImportMeta {
+  env: {
+    VITE_OPENAI_API_KEY: string;
+  };
+}
+
 // Validate that the API key is provided
 const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 if (!OPENAI_API_KEY) {
@@ -207,9 +213,25 @@ const AIPlugin: AIPlugin = (editor) => {
           getSubmenuItems: () => [
             { type: 'menuitem', text: 'Business', onAction: () => handleTextTransformation('Rewrite this content as a business professional with formal language.') },
             { type: 'menuitem', text: 'Legal', onAction: () => handleTextTransformation('Rewrite this content as a legal professional using valid legal terminology.') },
-            { type: 'menuitem', text: 'Journalism', onAction: () => handleTextTransformation('Rewrite this content as a journalist using engaging language to convey the importance of the information.') },
-            { type: 'menuitem', text: 'Medical', onAction: () => handleTextTransformation('Rewrite this content as a medical professional using valid medical terminology.') },
-            { type: 'menuitem', text: 'Poetic', onAction: () => handleTextTransformation('Rewrite this content as a poem using poetic techniques without losing the original meaning.') },
+            { type: 'menuitem', text: 'Itemized', onAction: () => handleTextTransformation('Rewrite this content with a clear, structured breakdown of information, organizing details in a systematic way.') },
+            { type: 'menuitem', text: 'Concise', onAction: () => handleTextTransformation('Rewrite this content in a brief, precise manner that focuses on essential details and clear communication.') },
+            { type: 'menuitem', text: 'Reminder', onAction: () => handleTextTransformation('Rewrite this content as a gentle reminder, using courteous language to prompt action while maintaining professionalism.') },
+          ],
+        },
+        {
+          type: 'nestedmenuitem',
+          text: 'Translate',
+          getSubmenuItems: () => [
+            { 
+              type: 'menuitem', 
+              text: 'French', 
+              onAction: () => handleTextTransformation('Translate this content into French, maintaining the original tone and style.') 
+            },
+            { 
+              type: 'menuitem', 
+              text: 'Spanish', 
+              onAction: () => handleTextTransformation('Translate this content into Spanish, maintaining the original tone and style.') 
+            },
           ],
         },
       ];
