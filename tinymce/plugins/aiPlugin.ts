@@ -1,5 +1,4 @@
 import OpenAI from 'openai';
-
 // Types and Interfaces
 interface ImportMetaEnv {
   VITE_OPENAI_API_KEY: string;
