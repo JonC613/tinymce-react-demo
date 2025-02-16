@@ -224,6 +224,11 @@ const AIPlugin: AIPlugin = (editor) => {
           getSubmenuItems: () => [
             { 
               type: 'menuitem', 
+              text: 'English', 
+              onAction: () => handleTextTransformation('Translate this content into English, maintaining the original tone and style.') 
+            },
+            { 
+              type: 'menuitem', 
               text: 'French', 
               onAction: () => handleTextTransformation('Translate this content into French, maintaining the original tone and style.') 
             },
