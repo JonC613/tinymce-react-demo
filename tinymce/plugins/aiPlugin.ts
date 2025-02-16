@@ -1,12 +1,6 @@
 import OpenAI from 'openai';
-import { ignoreOverride } from 'openai/_vendor/zod-to-json-schema/Options.mjs';
 
 // Types and Interfaces
-interface ImportMetaEnv {
-  VITE_OPENAI_API_KEY: string;
-  env: any;
-  
-}
 
 interface MenuItem {
   type: 'menuitem';
