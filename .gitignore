@@ -23,3 +23,23 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+
+# Node/Vite build & cache
+.vite
+.cache
+.eslintcache
+*.tsbuildinfo
+
+# Test coverage / reports
+coverage/
+.nyc_output/
+
+# Generated / vendor files
+# postinstall.js copies tinymce from node_modules into public/tinymce
+/public/tinymce
+
+# Misc
+*.tgz
+.parcel-cache/
+.pnp.*
